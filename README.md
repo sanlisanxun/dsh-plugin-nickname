@@ -53,6 +53,13 @@ dsh-plugin-nickname/
 
 完整更新日志见 [CHANGELOG.md](CHANGELOG.md)。
 
+### v0.2.8
+- 🐛 修复备注完全不生效：dsh 的插件名在 `<button class="cardTitle">` 里，外层还有两层 `div`；「只改写文本节点」后容器里没有直接文本节点，替换被整体跳过。现改为向下定位真正承载文本的叶子节点再写入
+- 🐛 修复标题按钮被抹掉：旧版用 `textContent` 覆盖容器会连 `<button>`、图标、描述一起清空，列表项点不开
+- ✨ 支持 dsh「显示名 (包名)」标题形式，如 `dsh-context` 的 `上下文 (dsh-context)`
+- ✨ 默认扫描选择器补上 `button`
+- ⚡ 面板列表改以 dsh 卡片上的 `data-plugin-package` 为准收集已安装插件，不再只靠文本猜测
+
 ### v0.2.7
 - ✨ 支持无 `__ModuleLoader__` 的宿主环境（dsh web 版）：检测不到模块加载器时自行启动
 - ✨ 存储读写增加内存兜底：localStorage 不可用（隐私模式 / web 版）时不再中断

@@ -2,6 +2,19 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.2.8] - 2026-10-13
+
+### 修复
+- **备注完全不生效**：dsh 的插件名是 `<button class="cardTitle">`，外层还套着 `div.titleRow` / `div.cardMain`。v0.2.6 起把写入改成「只改写直接文本节点、不破坏子元素」后，容器里没有直接文本节点，`findText` 返回失败，整个替换被跳过 —— 表现为面板能打开、备注能保存，但列表上毫无变化。现改为向下定位真正承载文本的叶子节点再写入
+- **标题按钮被抹掉**：v0.2.5 及更早直接 `el.textContent = 备注`，命中 `div.titleRow` 时会把里面的 `<button>` 一起清空，列表项失去点击能力（用真实 DOM 复现：替换后 `button.cardTitle` 变为 `null`）
+- 支持 dsh 的「显示名 (包名)」标题形式（如 `上下文 (dsh-context)`），这类标题原来既不等于包名也不以包名开头，永远匹配不上
+- 还原逻辑改为按记录的原标题回写，不再统一回写成包名，避免把「显示名 (包名)」还原成裸包名
+
+### 优化
+- 默认扫描选择器补上 `button`
+- `scanPlugins` 改以 dsh 卡片上的 `data-plugin-package` 属性为准收集已安装插件
+- 修掉上一轮补丁把 `initShortcut` 守卫与赋值挤到同一行的排版问题
+
 ## [v0.2.7] - 2026-10-13
 
 ### 新增

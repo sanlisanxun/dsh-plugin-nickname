@@ -51,6 +51,13 @@ dsh-plugin-nickname/
 
 Full changelog: [CHANGELOG.md](CHANGELOG.md).
 
+### v0.2.8
+- 🐛 Fixed nicknames not applying at all: dsh renders the plugin name inside `<button class="cardTitle">` wrapped in two more `div`s, so the leaf-only rewrite found no direct text node and skipped everything. It now walks down to the node that actually holds the text
+- 🐛 Fixed the title button being wiped out: the old `textContent` overwrite also cleared the `<button>`, icon and description
+- ✨ Supports dsh's `Display Name (package)` title form, e.g. `上下文 (dsh-context)`
+- ✨ `button` added to the default scan selector
+- ⚡ The panel list now derives installed packages from dsh's `data-plugin-package` attribute instead of guessing from text
+
 ### v0.2.7
 - ✨ Works without `__ModuleLoader__` (dsh web): self-boots when no module loader is present
 - ✨ Storage falls back to memory when localStorage is unavailable (private mode / web)

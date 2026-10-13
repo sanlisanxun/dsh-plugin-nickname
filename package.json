@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-nickname",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "dsh插件名称修改：给 DeepSeek Harness 插件列表里的插件自定义中文备注名，直接显示在原生插件设置页",
   "type": "module",
   "main": "./lib/index.js",
@@ -33,7 +33,7 @@
     }
   },
   "scripts": {
-    "test": "node tests/client.test.cjs lib/client.js && node tests/known-issues.test.cjs lib/client.js"
+    "test": "node tests/client.test.cjs lib/client.js && node tests/known-issues.test.cjs lib/client.js && node tests/real-dom.test.cjs lib/client.js"
   },
   "devDependencies": {
     "jsdom": "^30.1.2"
