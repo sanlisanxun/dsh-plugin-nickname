@@ -53,6 +53,11 @@ dsh-plugin-nickname/
 
 完整更新日志见 [CHANGELOG.md](CHANGELOG.md)。
 
+### v0.2.9
+- 🐛 修复真实浏览器下备注不生效：替换守卫用 `childNodes.length <= 2` 计数，换行空白文本节点会让它变成 3 而被挡掉；改为只按元素子节点计数，与渲染方式无关
+- 🐛 修复插件改写自己界面：编辑面板里的包名标签会被自己的替换逻辑覆盖，导致标签显示成备注名；现在跳过所有 `[data-nickname-ui]` 内部节点
+- ✅ 新增真实浏览器验证 `npm run test:browser`（Chromium 加载 `tests/harness/index.html`，7 条断言）
+
 ### v0.2.8
 - 🐛 修复备注完全不生效：dsh 的插件名在 `<button class="cardTitle">` 里，外层还有两层 `div`；「只改写文本节点」后容器里没有直接文本节点，替换被整体跳过。现改为向下定位真正承载文本的叶子节点再写入
 - 🐛 修复标题按钮被抹掉：旧版用 `textContent` 覆盖容器会连 `<button>`、图标、描述一起清空，列表项点不开

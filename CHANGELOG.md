@@ -2,6 +2,16 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.2.9] - 2026-10-13
+
+### 修复
+- **真实浏览器下备注不生效**：替换守卫写的是 `el.children.length !== 0 && el.childNodes.length > 2`，其中 `childNodes` 会把换行产生的空白文本节点算进去。同一份 DOM 由 React 渲染（元素之间无空白文本节点）时 `childNodes.length` 为 1，手写 HTML 带缩进换行时为 3 —— 后者直接被守卫挡掉。改为只按**元素子节点**计数（`el.children.length > 2`），与渲染方式无关
+- **插件改写自己的界面**：编辑面板里每个条目的包名标签，文本恰好就是包名，会被自己的替换逻辑命中并改成备注名，导致面板上「标签」和「输入框」显示成同一个值。现在 `replaceNicknames` 跳过所有位于 `[data-nickname-ui]` 内部的节点
+
+### 新增
+- `tests/harness/index.html`：按 dsh `CardHead` / `PackageCard` 结构复刻的插件列表页
+- `tests/browser-check.mjs` + `npm run test:browser`：用本机 Chromium 加载该页面并断言 7 项（替换生效、按钮完好、图标描述未丢、面板渲染、面板标签仍是包名）。找不到 Chromium 时打印 SKIP 并以 0 退出
+
 ## [v0.2.8] - 2026-10-13
 
 ### 修复

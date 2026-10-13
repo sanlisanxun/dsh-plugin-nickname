@@ -51,6 +51,11 @@ dsh-plugin-nickname/
 
 Full changelog: [CHANGELOG.md](CHANGELOG.md).
 
+### v0.2.9
+- 🐛 Fixed nicknames not applying in a real browser: the guard counted `childNodes.length <= 2`, so whitespace text nodes from line breaks pushed it to 3 and blocked the replacement; it now counts element children only
+- 🐛 Fixed the plugin rewriting its own panel: the package-name labels inside the edit panel were being replaced with the nicknames; nodes inside `[data-nickname-ui]` are now skipped
+- ✅ Added real-browser verification: `npm run test:browser` (Chromium loads `tests/harness/index.html`, 7 assertions)
+
 ### v0.2.8
 - 🐛 Fixed nicknames not applying at all: dsh renders the plugin name inside `<button class="cardTitle">` wrapped in two more `div`s, so the leaf-only rewrite found no direct text node and skipped everything. It now walks down to the node that actually holds the text
 - 🐛 Fixed the title button being wiped out: the old `textContent` overwrite also cleared the `<button>`, icon and description
