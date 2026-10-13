@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-nickname",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "dsh插件名称修改：给 DeepSeek Harness 插件列表里的插件自定义中文备注名，直接显示在原生插件设置页",
   "type": "module",
   "main": "./lib/index.js",

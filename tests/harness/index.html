@@ -56,6 +56,11 @@ const NICK = {
 // 模拟 dsh 的模块加载器
 window.__ModuleLoader__ = { load(def) { window.__NICK_DEF__ = def; } };
 
+const params = new URLSearchParams(location.search);
+const presetGroup = params.get('group');
+if (presetGroup) {
+  localStorage.setItem('dsh_plugin_nicknames_settings', JSON.stringify({ groupBy: presetGroup }));
+}
 localStorage.setItem('dsh_plugin_nicknames', JSON.stringify(NICK));
 
 document.getElementById('cards').innerHTML = DATA.map(([pkg, title, desc]) => `
@@ -81,6 +86,14 @@ document.getElementById('cards').innerHTML = DATA.map(([pkg, title, desc]) => `
       const btn = document.getElementById('nickname-float-btn');
       if (btn) btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     }, 400);
+  }
+  // ?collapse=<分组名> 面板展开后自动折叠该分组，用于折叠功能验证
+  const collapseName = new URLSearchParams(location.search).get('collapse');
+  if (collapseName) {
+    setTimeout(() => {
+      const h = document.querySelector(`.nickname-group-header[data-group="${collapseName}"]`);
+      if (h) h.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }, 900);
   }
 </script>
 </body>

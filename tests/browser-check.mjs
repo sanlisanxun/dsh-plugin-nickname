@@ -56,6 +56,20 @@ const ok = (name, cond, extra) => {
   console.log(`  ${cond ? 'PASS' : 'FAIL'}  ${name}${cond || !extra ? '' : '  -> ' + extra}`);
 };
 
+function loadDOM(query) {
+  return new Promise((res, rej) => {
+    const p = spawn(chrome, [
+      '--headless=new', '--disable-gpu', '--no-sandbox', '--no-proxy-server',
+      '--virtual-time-budget=6000', '--no-first-run', '--no-default-browser-check',
+      '--dump-dom', `http://127.0.0.1:${PORT}/?${query}`,
+    ], { stdio: ['ignore', 'pipe', 'ignore'] });
+    let buf = '';
+    p.stdout.on('data', (d) => (buf += d));
+    p.on('error', rej);
+    p.on('close', () => res(buf));
+  });
+}
+
 const chrome = findChrome();
 if (!chrome) {
   console.log('  SKIP  未找到本机 Chromium，跳过真实浏览器验证（可设 CHROME_PATH 指定）');
@@ -65,18 +79,8 @@ if (!chrome) {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const PORT = server.address().port;
 try {
-  const out = await new Promise((res, rej) => {
-    const p = spawn(chrome, [
-      '--headless=new', '--disable-gpu', '--no-sandbox', '--no-proxy-server',
-      '--virtual-time-budget=6000', '--no-first-run', '--no-default-browser-check',
-      '--dump-dom', `http://127.0.0.1:${PORT}/?open=1`,
-    ], { stdio: ['ignore', 'pipe', 'ignore'] });
-    let buf = '';
-    p.stdout.on('data', (d) => (buf += d));
-    p.on('error', rej);
-    p.on('close', () => res(buf));
-  });
-
+  // 默认：不分组的替换与结构断言
+  const out = await loadDOM('open=1');
   const titles = [...out.matchAll(/class="cardTitle cardOpen"[^>]*>([^<]*)/g)].map((m) => m[1]);
   const dom = out.replace(/<script[\s\S]*?<\/script>/g, ''); // 去掉脚本源码里的模板字面量
 
@@ -89,6 +93,18 @@ try {
   ok('真实浏览器：编辑面板已渲染', /id="nickname-edit-panel"/.test(out));
   ok('真实浏览器：面板标签显示包名而非备注', /@kenz1117\/dsh-ui-usage-billing<\//.test(out));
   ok('真实浏览器：官方条目输入框被禁用', /data-pkg="@deepseek-ai\/dsh-ui-theme"[^>]*disabled/.test(out));
+
+  // 分组：两个分组都存在且默认展开
+  const grouped = await loadDOM('group=hasNickname&open=1');
+  const groupHeaders = [...grouped.matchAll(/class="nickname-group-header"[^>]*data-group="([^"]*)"/g)].map((m) => m[1]);
+  ok('真实浏览器：分组渲染出两个分组', groupHeaders.length === 2, groupHeaders.join(' | '));
+  ok('真实浏览器：分组默认全部展开', (grouped.match(/class="nickname-group-body" style="display: none;"/g) || []).length === 0);
+
+  // 折叠：自动折叠「已修改备注的插件」后，该分组内容隐藏、指示符变 ▸，另一分组仍可见
+  const collapsed = await loadDOM('group=hasNickname&open=1&collapse=' + encodeURIComponent('已修改备注的插件'));
+  ok('真实浏览器：折叠后该分组内容隐藏', /class="nickname-group-body" style="display: none;"/.test(collapsed));
+  ok('真实浏览器：折叠指示符变为 ▸', /data-group="已修改备注的插件"[^>]*><span class="nickname-group-toggle"[^>]*>▸<\/span>/.test(collapsed));
+  ok('真实浏览器：仅被折叠的分组隐藏（另一分组仍可见）', (collapsed.match(/class="nickname-group-body" style="display: none;"/g) || []).length === 1);
 } finally {
   server.close();
 }
