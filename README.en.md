@@ -51,6 +51,11 @@ dsh-plugin-nickname/
 
 Full changelog: [CHANGELOG.md](CHANGELOG.md).
 
+### v0.3.0
+- 🛡 Official plugins can no longer be renamed by default: `@deepseek-ai/*` and dsh's built-in bundles are skipped, marked “官方” and disabled in the panel
+- ✨ New “改官方” (allow official) toggle to lift the restriction when you need it
+- ✨ Saving a nickname for an official plugin is blocked even if the UI is bypassed
+
 ### v0.2.9
 - 🐛 Fixed nicknames not applying in a real browser: the guard counted `childNodes.length <= 2`, so whitespace text nodes from line breaks pushed it to 3 and blocked the replacement; it now counts element children only
 - 🐛 Fixed the plugin rewriting its own panel: the package-name labels inside the edit panel were being replaced with the nicknames; nodes inside `[data-nickname-ui]` are now skipped

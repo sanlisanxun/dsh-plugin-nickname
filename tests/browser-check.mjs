@@ -83,10 +83,12 @@ try {
   ok('真实浏览器：第三方包名已替换为备注', titles.includes('用量计费面板') && titles.includes('任务看板'), titles.join(' | '));
   ok('真实浏览器：「显示名 (包名)」已替换', titles.includes('上下文管理') && titles.includes('费用计量'), titles.join(' | '));
   ok('真实浏览器：无备注的插件保持原名', titles.includes('dsh-plugin-nickname'));
-  ok('真实浏览器：标题按钮未被破坏', (out.match(/class="cardTitle cardOpen"/g) || []).length === 7);
-  ok('真实浏览器：图标/描述未丢', (dom.match(/class="cardIcon"/g) || []).length === 6 && (dom.match(/class="cardDesc"/g) || []).length === 6);
+  ok('真实浏览器：标题按钮未被破坏', (out.match(/class="cardTitle cardOpen"/g) || []).length === 8);
+  ok('真实浏览器：图标/描述未丢', (dom.match(/class="cardIcon"/g) || []).length === 7 && (dom.match(/class="cardDesc"/g) || []).length === 7);
+  ok('真实浏览器：官方插件保持原名', titles.includes('@deepseek-ai/dsh-ui-theme'), titles.join(' | '));
   ok('真实浏览器：编辑面板已渲染', /id="nickname-edit-panel"/.test(out));
   ok('真实浏览器：面板标签显示包名而非备注', /@kenz1117\/dsh-ui-usage-billing<\//.test(out));
+  ok('真实浏览器：官方条目输入框被禁用', /data-pkg="@deepseek-ai\/dsh-ui-theme"[^>]*disabled/.test(out));
 } finally {
   server.close();
 }

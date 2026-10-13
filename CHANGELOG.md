@@ -2,6 +2,19 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.3.0] - 2026-10-13
+
+### 新增
+- **官方插件保护**：`@deepseek-ai/*` 命名空间与 dsh 内置 bundle（`@deepseek-ai/dsh-base`、`dsh-web-app`、`dsh-headless`、`dsh-sdk-app`、`dsh-acp-app`、`dsh-sdk-minimal`，取自 dsh 自己的 `BUILTIN_PROFILE_BUNDLES`）默认不参与改名
+  - `replaceNicknames` 过滤掉官方包
+  - `saveNickname` 在写入前拦截，绕过界面（如 `window.__setPluginNickname`）也改不动
+  - 面板里官方条目带「官方」角标，输入框 `disabled`，占位文案为「官方插件，默认不可改名」
+- **「改官方」开关**：面板头部的复选框（设置项 `allowOfficial`，默认 `false`），勾上后官方插件恢复正常改名能力
+
+### 说明
+- 官方插件改名后容易在 dsh 的更新、排障、官方支持场景下造成混淆，因此改为默认屏蔽
+- 此改动会停掉此前对官方插件已设的备注（备注数据保留，勾上开关即恢复生效）
+
 ## [v0.2.9] - 2026-10-13
 
 ### 修复

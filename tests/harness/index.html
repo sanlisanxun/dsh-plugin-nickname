@@ -28,13 +28,14 @@
 </head>
 <body>
 
-<h2>已安装 6</h2>
+<h2>已安装 7</h2>
 <ul class="cards" id="cards"></ul>
 
 <div id="hint">结构完全按 dsh 插件管理页 CardHead/PackageCard 复刻：li[data-plugin-package] &gt; div.cardHead &gt; div.cardMain &gt; div.titleRow &gt; button.cardTitle</div>
 
 <script>
 const DATA = [
+  ['@deepseek-ai/dsh-ui-theme',           '@deepseek-ai/dsh-ui-theme',           '官方主题插件（官方插件，默认不可改名）'],
   ['@kenz1117/dsh-ui-usage-billing',      '@kenz1117/dsh-ui-usage-billing',      '用量计费面板：按会话统计 token 与费用'],
   ['@linxin666/dsh-client-ui-task-board', '@linxin666/dsh-client-ui-task-board', 'Host-authoritative task board'],
   ['dsh-context',                          '上下文 (dsh-context)',                '上下文洞察与管理插件：提供跨会话的上下文浏览'],
@@ -44,6 +45,7 @@ const DATA = [
 ];
 
 const NICK = {
+  '@deepseek-ai/dsh-ui-theme': '官方主题',
   '@kenz1117/dsh-ui-usage-billing': '用量计费面板',
   '@linxin666/dsh-client-ui-task-board': '任务看板',
   'dsh-context': '上下文管理',
