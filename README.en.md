@@ -49,6 +49,32 @@ dsh-plugin-nickname/
 
 ## Changelog
 
+Full changelog: [CHANGELOG.md](CHANGELOG.md).
+
+### v0.2.5
+- 🐛 Fixed undeclared variable (`style` → `styleEl`) when injecting panel styles: no more `ReferenceError` in strict mode, the panel opens correctly
+- 🐛 Fixed the injected `<style>` tag not being removable on dispose
+
+### v0.2.4
+- ✨ Added uninstall button: clears all local data and prompts you to finish uninstalling in the dsh plugin list
+
+### v0.2.3
+- 🐛 Fixed leftover UI after disabling the plugin; improved dispose cleanup
+
+### v0.2.2
+- ✨ Added sorting by original name / nickname
+- ✨ Added grouping by whether a nickname is set
+- 🎨 Improved UI for the dark theme
+
+### v0.2.1
+- 🎨 Refined UI styles to better match the dsh dark theme
+- Added hover effect and animation to the floating button
+
+### v0.2.0
+- ✨ Added master switch for enabling/disabling nickname replacement
+- ✨ Added reset button to clear all custom nicknames
+- ✨ Added draggable floating button with auto-saved position
+
 ### v0.1.1
 - ✨ Added search box: quickly find plugins when there are many
 - ✨ Added export/import: backup your nickname settings
