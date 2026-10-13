@@ -105,6 +105,17 @@ try {
   ok('真实浏览器：折叠后该分组内容隐藏', /class="nickname-group-body" style="display: none;"/.test(collapsed));
   ok('真实浏览器：折叠指示符变为 ▸', /data-group="已修改备注的插件"[^>]*><span class="nickname-group-toggle"[^>]*>▸<\/span>/.test(collapsed));
   ok('真实浏览器：仅被折叠的分组隐藏（另一分组仍可见）', (collapsed.match(/class="nickname-group-body" style="display: none;"/g) || []).length === 1);
+
+  // 标签分组：固定分类 官方/已修改/未修改 必现，且预置的自定义标签也成组
+  const tagged = await loadDOM('tags=1&open=1');
+  const tagGroups = [...tagged.matchAll(/class="nickname-group-header"[^>]*data-group="([^"]*)"/g)].map((m) => m[1]);
+  ok('真实浏览器：标签分组含固定分类 官方/已修改/未修改', ['官方', '已修改', '未修改'].every((g) => tagGroups.includes(g)), tagGroups.join(' | '));
+  ok('真实浏览器：预置自定义标签也生成分组', tagGroups.includes('我的标签'), tagGroups.join(' | '));
+  // 取「我的标签」分组（到下一个分组或正文结束）这一段，确认被打标的插件落在其中
+  const tagSeg = tagged.match(/data-group="我的标签"[\s\S]*?(?=data-group="|<\/body>)/);
+  ok('真实浏览器：自定义标签分组包含被打标的插件', !!tagSeg && /data-pkg="@kenz1117\/dsh-ui-usage-billing"/.test(tagSeg[0]), tagSeg ? '含' : '无分组');
+  ok('真实浏览器：插件条目内显示固定标签 chip', /class="nickname-tag tag-fixed"[^>]*>官方<\/span>/.test(tagged));
+  ok('真实浏览器：高级区列出自定义标签且可删除', /id="nickname-tag-manager"[\s\S]*?class="nickname-tag-del" data-tag="我的标签"/.test(tagged));
 } finally {
   server.close();
 }

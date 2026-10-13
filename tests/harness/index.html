@@ -57,9 +57,14 @@ const NICK = {
 window.__ModuleLoader__ = { load(def) { window.__NICK_DEF__ = def; } };
 
 const params = new URLSearchParams(location.search);
-const presetGroup = params.get('group');
-if (presetGroup) {
-  localStorage.setItem('dsh_plugin_nicknames_settings', JSON.stringify({ groupBy: presetGroup }));
+const preset = {};
+if (params.get('group')) preset.groupBy = params.get('group');
+if (params.get('tags')) {
+  preset.groupBy = preset.groupBy || 'tags';
+  preset.tags = { custom: ['我的标签'], assignments: { '@kenz1117/dsh-ui-usage-billing': ['我的标签'] } };
+}
+if (Object.keys(preset).length) {
+  localStorage.setItem('dsh_plugin_nicknames_settings', JSON.stringify(preset));
 }
 localStorage.setItem('dsh_plugin_nicknames', JSON.stringify(NICK));
 
