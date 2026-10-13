@@ -202,6 +202,48 @@ document.getElementById('cards').innerHTML = DATA.map(([pkg, title, desc]) => `
       document.body.dataset.taglimit = JSON.stringify(out);
     }, 1400);
   }
+  // ?tagbug=1 复现：删标签后新建输入不了 / 改标签是否即时更新
+  if (new URLSearchParams(location.search).get('tagbug') === '1') {
+    const readSettings = () => { try { return JSON.parse(localStorage.getItem('dsh_plugin_nicknames_settings') || '{}'); } catch (e) { return {}; } };
+    const has = (nm) => (readSettings().tags.custom || []).indexOf(nm) !== -1;
+    setTimeout(() => { const b = document.getElementById('nickname-float-btn'); if (b) b.dispatchEvent(new MouseEvent('click', { bubbles: true })); }, 400);
+    setTimeout(() => {
+      const out = {};
+      try {
+        window.confirm = () => true;
+        const panel = document.getElementById('nickname-edit-panel');
+        const doCreate = (nm) => {
+          const row = panel.querySelector('.nickname-tags');
+          row.querySelector('.nickname-tag-add').click();
+          const nw = row.querySelector('.nickname-tag-new');
+          const visible = nw.style.display !== 'none';
+          const inp = row.querySelector('.nickname-tag-input');
+          const crt = row.querySelector('.nickname-tag-create');
+          inp.value = nm; crt.click();
+          return visible;
+        };
+        out.c1_visible = doCreate('甲');
+        out.c1_has = has('甲');
+        const x = panel.querySelector('.nickname-tag-x[data-tag="甲"]');
+        out.d_found = !!x;
+        if (x) x.click();
+        out.d_gone = !has('甲');
+        out.c2_visible = doCreate('乙');
+        out.c2_has = has('乙');
+        doCreate('丙');
+        const chip = panel.querySelector('.tag-toggle[data-tag="丙"]');
+        out.t_exists = !!chip;
+        if (chip) {
+          out.t_beforeOn = chip.classList.contains('on');
+          chip.click();
+          const chip2 = panel.querySelector('.tag-toggle[data-tag="丙"]');
+          out.t_afterExists = !!chip2;
+          out.t_afterOn = chip2 ? chip2.classList.contains('on') : null;
+        }
+      } catch (e) { out.err = String((e && e.message) || e); }
+      document.body.dataset.tagbug = JSON.stringify(out);
+    }, 1500);
+  }
 </script>
 </body>
 </html>

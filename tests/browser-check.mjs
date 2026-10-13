@@ -134,6 +134,15 @@ try {
   ok('真实浏览器：可创建超过 3 个标签（无 3 上限）', !!(lj && lj.createdAll5 && lj.customCount === 5 && lj.managerCount === 5), lm ? lm[1].slice(0, 240) : '无 data-taglimit');
   ok('真实浏览器：高级管理区删除标签（名为"1"）三处同步移除', !!(lj && lj.foundDel1 && lj.gone1Custom && lj.gone1Assign && lj.gone1Manager && lj.chip1Gone && lj.mgrAfter1 === 4), lm ? lm[1].slice(0, 240) : '无 data-taglimit');
   ok('真实浏览器：条目内联 ✕ 删除标签（名为"标签B"）三处同步移除', !!(lj && lj.foundXB && lj.goneBCustom && lj.goneBAssign && lj.goneBManager && lj.chipBGone && lj.mgrAfter2 === 3), lm ? lm[1].slice(0, 240) : '无 data-taglimit');
+
+  // 复现用户 bug：删标签后新建输入不了 / 改标签是否即时更新
+  const bug = await loadDOM('tagbug=1&group=tags');
+  const bm = bug.match(/data-tagbug="([^"]*)"/);
+  let bj = null;
+  try { bj = bm ? JSON.parse(bm[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&')) : null; } catch (e) {}
+  console.log('  [tagbug] ' + (bm ? bm[1] : '无 data-tagbug'));
+  ok('复现通过：删除标签后仍能新建（输入框可见且建成）', !!(bj && bj.c2_visible === true && bj.c2_has === true), bm ? bm[1].slice(0, 300) : '无');
+  ok('复现通过：切换标签后面板即时更新（无需刷新）', !!(bj && bj.t_exists && bj.t_beforeOn === true && bj.t_afterExists && bj.t_afterOn === false), bm ? bm[1].slice(0, 300) : '无');
 } finally {
   server.close();
 }
