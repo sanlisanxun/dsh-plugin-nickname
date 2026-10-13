@@ -125,6 +125,15 @@ try {
   ok('真实浏览器：增标签——写入设置并在条目/高级区出现', !!(fj && fj.create && fj.create.inCustom && fj.create.inAssign && fj.create.chipOn && fj.create.inManager), fm ? fm[1].slice(0, 240) : '无 data-tagflow');
   ok('真实浏览器：删标签——从设置/条目/高级区移除', !!(fj && fj.delete && fj.delete.foundDel && fj.delete.notInCustom && fj.delete.notInAssign && fj.delete.managerGone), fm ? fm[1].slice(0, 240) : '无 data-tagflow');
   ok('真实浏览器：增删标签闭环 ok=true', !!(fj && fj.ok === true), fm ? fm[1].slice(0, 240) : '无 data-tagflow');
+
+  // 连建 5 个标签（验证无 3 上限）并删除名为 "1" 的标签
+  const lim = await loadDOM('taglimit=1');
+  const lm = lim.match(/data-taglimit="([^"]*)"/);
+  let lj = null;
+  try { lj = lm ? JSON.parse(lm[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&')) : null; } catch (e) {}
+  ok('真实浏览器：可创建超过 3 个标签（无 3 上限）', !!(lj && lj.createdAll5 && lj.customCount === 5 && lj.managerCount === 5), lm ? lm[1].slice(0, 240) : '无 data-taglimit');
+  ok('真实浏览器：高级管理区删除标签（名为"1"）三处同步移除', !!(lj && lj.foundDel1 && lj.gone1Custom && lj.gone1Assign && lj.gone1Manager && lj.chip1Gone && lj.mgrAfter1 === 4), lm ? lm[1].slice(0, 240) : '无 data-taglimit');
+  ok('真实浏览器：条目内联 ✕ 删除标签（名为"标签B"）三处同步移除', !!(lj && lj.foundXB && lj.goneBCustom && lj.goneBAssign && lj.goneBManager && lj.chipBGone && lj.mgrAfter2 === 3), lm ? lm[1].slice(0, 240) : '无 data-taglimit');
 } finally {
   server.close();
 }

@@ -146,6 +146,62 @@ document.getElementById('cards').innerHTML = DATA.map(([pkg, title, desc]) => `
       document.body.dataset.tagflow = JSON.stringify(out);
     }, 1200);
   }
+  // ?taglimit=1 连建 5 个标签（验证无 3 上限）并删除其中名为 "1" 的标签，结果写进 body[data-taglimit]
+  if (new URLSearchParams(location.search).get('taglimit') === '1') {
+    const NAMES = ['1', '标签B', '标签C', '标签D', '标签E'];
+    const readSettings = () => { try { return JSON.parse(localStorage.getItem('dsh_plugin_nicknames_settings') || '{}'); } catch (e) { return {}; } };
+    setTimeout(() => {
+      const btn = document.getElementById('nickname-float-btn');
+      if (btn) btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }, 400);
+    setTimeout(() => {
+      const out = { ok: false };
+      try {
+        const panel = document.getElementById('nickname-edit-panel');
+        if (!panel) throw new Error('panel-not-open');
+        const first = panel.querySelector('.nickname-tags .nickname-tag-add');
+        const pkg = first.closest('.nickname-tags').dataset.pkg;
+        NAMES.forEach((nm) => {
+          const row = panel.querySelector('.nickname-tags[data-pkg="' + pkg + '"]');
+          row.querySelector('.nickname-tag-add').click();
+          const inp = row.querySelector('.nickname-tag-input');
+          const crt = row.querySelector('.nickname-tag-create');
+          inp.value = nm; crt.click();
+        });
+        const t1 = readSettings().tags || {};
+        out.createdAll5 = NAMES.every((nm) => (t1.custom || []).indexOf(nm) !== -1);
+        out.customCount = (t1.custom || []).length;
+        out.managerCount = panel.querySelectorAll('#nickname-tag-manager .nickname-tag-del').length;
+        // ① 高级管理区 ✕ 删 "1"
+        const del1 = panel.querySelector('.nickname-tag-del[data-tag="1"]');
+        out.foundDel1 = !!del1;
+        if (del1) del1.click();
+        const t2 = readSettings().tags || {};
+        out.gone1Custom = (t2.custom || []).indexOf('1') === -1;
+        out.gone1Assign = ((t2.assignments || {})[pkg] || []).indexOf('1') === -1;
+        out.gone1Manager = !panel.querySelector('.nickname-tag-del[data-tag="1"]');
+        out.chip1Gone = !panel.querySelector('.nickname-tags[data-pkg="' + pkg + '"] .tag-toggle[data-tag="1"]');
+        out.mgrAfter1 = panel.querySelectorAll('#nickname-tag-manager .nickname-tag-del').length;
+        // ② 条目内联 ✕ 删 "标签B"（confirm 自动确认）
+        window.confirm = () => true;
+        const xb = panel.querySelector('.nickname-tag-x[data-tag="标签B"]');
+        out.foundXB = !!xb;
+        if (xb) xb.click();
+        const t3 = readSettings().tags || {};
+        out.goneBCustom = (t3.custom || []).indexOf('标签B') === -1;
+        out.goneBAssign = ((t3.assignments || {})[pkg] || []).indexOf('标签B') === -1;
+        out.goneBManager = !panel.querySelector('.nickname-tag-del[data-tag="标签B"]');
+        out.chipBGone = !panel.querySelector('.nickname-tags[data-pkg="' + pkg + '"] .tag-toggle[data-tag="标签B"]');
+        out.mgrAfter2 = panel.querySelectorAll('#nickname-tag-manager .nickname-tag-del').length;
+        out.ok = out.createdAll5 && out.customCount === 5 && out.managerCount === 5
+          && out.foundDel1 && out.gone1Custom && out.gone1Assign && out.gone1Manager && out.chip1Gone && out.mgrAfter1 === 4
+          && out.foundXB && out.goneBCustom && out.goneBAssign && out.goneBManager && out.chipBGone && out.mgrAfter2 === 3;
+      } catch (e) {
+        out.err = String((e && e.message) || e);
+      }
+      document.body.dataset.taglimit = JSON.stringify(out);
+    }, 1400);
+  }
 </script>
 </body>
 </html>
