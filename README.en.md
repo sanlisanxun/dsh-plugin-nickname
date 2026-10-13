@@ -1,14 +1,16 @@
 # dsh Plugin Nickname
 
-Custom Chinese nicknames for DeepSeek Harness (dsh) plugins, displayed directly in the native plugin settings page.
+Custom Chinese nicknames for DeepSeek Harness (dsh) plugins, displayed directly in the native plugin settings page. Supports grouping (by nickname / by tag), collapsible groups, official-plugin protection, and custom tags.
 
 ## Features
 
-- Automatically replace English package names in the plugin list with custom Chinese nicknames
+- Automatically replace English package names in the plugin list with custom Chinese nicknames; hover to see the original English name
 - Visual edit panel: click the "📝 Nickname" button in the bottom left, or press `Ctrl+Shift+N`
-- Automatically scan all installed plugins for direct editing
-- Nicknames saved in browser localStorage, permanently effective
-- Hover over the nickname to see the original English package name
+- Automatically scan all installed plugins for direct editing; nicknames are saved in browser localStorage and persist
+- 🛡 Official plugins are protected by default: `@deepseek-ai/*` and dsh's built-in bundles are marked "官方" with a disabled input; an "改官方" (allow official) toggle in Advanced lifts the restriction
+- 🗂 Grouping: group by whether a nickname is set, or by tag; group headers collapse/expand and remember their state
+- 🏷 Custom tags: create and apply a tag inline via "+ 标签"; toggle or delete tags; fixed categories "官方 / 已修改 / 未修改" are applied automatically
+- 🔍 Search box, sort by original/nickname name, export/import, draggable button, master switch, one-click reset
 
 ## Installation
 
@@ -50,6 +52,12 @@ dsh-plugin-nickname/
 ## Changelog
 
 Full changelog: [CHANGELOG.md](CHANGELOG.md).
+
+### v0.3.2
+- 🏷 Added tag grouping: a new "by tag" grouping option (alongside "by nickname"); fixed categories "官方 / 已修改 / 未修改" are applied automatically; users can create custom tags and apply them inline, and manage/delete them in Advanced
+
+### v0.3.1
+- 🗂 Collapsible groups: when grouping is on, click a group header to expand/collapse; the state persists, with a `▾` / `▸` indicator
 
 ### v0.3.0
 - 🛡 Official plugins can no longer be renamed by default: `@deepseek-ai/*` and dsh's built-in bundles are skipped, marked “官方” and disabled in the panel
