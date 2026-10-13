@@ -2,6 +2,28 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.3.3] - 2026-10-13
+
+### 优化
+- **P0 正确性**
+  - 修复输入框重复 `style` 属性：条目输入框原本带两个 `style`，第二个 `style="margin-top: 0;"` 按 HTML 规范被静默忽略，现合并为单个 `style`
+  - 修复 `matchPackage` 前缀误命中：`text.startsWith(pkgName)` 会让 `dsh-context` 误中 `dsh-context-extra` 这类更长包名，现加边界判定（前缀后紧跟字母/数字/`.`/`/`/`-` 视为不同包名）
+- **P1 性能**
+  - 设置项与备注映射改为内存缓存（`settingsCache` / `nickCache`），每次 MutationObserver 触发不再重复 `JSON.parse` 读写 localStorage；`storageRemove` 对应失效缓存
+  - `saveNickname` / 导入均走缓存版 `saveNicknames`，导入路径也复用缓存，避免缓存与磁盘不一致
+  - 替换扫描范围收窄到 `[data-plugin-package]` 卡片内部（无卡片时回退全局扫描），避免每次全文档 `div/span/button/h2/h3` 扫描
+  - `findTextTarget` 由 `querySelectorAll` 全量收集改为直接子树遍历，定位承载文本的叶子节点
+  - 搜索框输入做 120ms 防抖（`searchTimer`），避免逐字符全量重渲染
+- **P2 整洁与体验**
+  - 分组重渲染前记录并恢复面板滚动位置（`scrollTop`），切标签/搜索时不再跳到顶部
+  - 编辑面板支持 `Esc` 关闭（新增 `escHandler`，关闭/卸载时一并解绑），打开时自动聚焦搜索框
+  - 移除面板构建/挂载/卸载过程中的 5 处遗留 `console.log` 调试输出（保留自动启动失败的唯一 `console.warn`）
+
+### 验证
+- 静态测试 4 套共 54 条保持全通过
+- 真实浏览器 19 条保持全通过
+- 合计 73 条断言全绿
+
 ## [v0.3.2] - 2026-10-13
 
 ### 新增
