@@ -51,6 +51,14 @@ dsh-plugin-nickname/
 
 Full changelog: [CHANGELOG.md](CHANGELOG.md).
 
+### v0.2.7
+- ✨ Works without `__ModuleLoader__` (dsh web): self-boots when no module loader is present
+- ✨ Storage falls back to memory when localStorage is unavailable (private mode / web)
+- ⚡ Removed the fixed 1 s delay: initializes immediately, then retries for up to ~2 s
+- ✨ Advanced settings in the panel: scan selector and package-name regex are configurable
+- 🐛 dispose now sweeps UI by session tag at 0 / 200 / 600 ms, removing late-rendered leftovers
+- ✨ Shows a "click to reload" hint when no plugin list is detected; panel has a reload button
+
 ### v0.2.6
 - 🐛 Fixed nickname replacement wiping child elements: only direct text nodes are rewritten now
 - 🐛 Fixed package-name prefix collision (`dsh.plugin` vs `dsh.plugin-manager`): longest name wins

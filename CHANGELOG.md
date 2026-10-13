@@ -2,6 +2,21 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.2.7] - 2026-10-13
+
+### 新增
+- 适配无 `__ModuleLoader__` 的宿主环境（dsh web 版）：检测不到模块加载器时监听 `DOMContentLoaded` 自行启动，并把 dispose 挂到 `window.__nicknameDispose`
+- 存储读写统一走 `storageGet` / `storageSet` / `storageRemove`，localStorage 被禁用时降级到内存存储，不再抛异常中断
+- 扫描选择器（`scanSelector`）与包名匹配正则（`namePattern`）可在面板「高级」里配置，dsh 改版导致 DOM 结构变化时无需改代码；选择器或正则非法时自动回退到默认值
+- 检测不到插件列表时，浮动按钮上方出现「未检测到插件列表，点此刷新页面」提示；面板底部新增「刷新页面使改动生效」按钮
+
+### 修复
+- 首次初始化固定 `setTimeout(..., 1000)`，按钮和备注要等满 1 秒；改为立即执行 + 每 200ms 重试（最多 10 次，约 2 秒），实测 150ms 内即生效
+- `dispose` 只清理当时存在的 UI，宿主若在 dispose 之后补渲染出按钮就会残留；改为给注入的 UI 打会话标记 `data-nickname-ui`，dispose 时按标记在 0 / 200 / 600ms 做三轮清扫
+
+### 优化
+- `initShortcut` 增加幂等守卫，重试初始化不会重复注册 keydown 监听
+
 ## [v0.2.6] - 2026-10-13
 
 ### 修复
