@@ -2,6 +2,15 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.3.4] - 2026-10-13
+
+### 修复
+- **高级区「标签管理」不随增/删标签刷新**：新建/删除自定义标签后，`#nickname-tag-manager` 只在面板打开时渲染一次，导致新建的标签在管理区没有删除按钮、已删除的标签仍残留在管理区，需关闭再开面板才同步。现抽出 `buildTagManagerHtml()` + `refreshTagManager()`，在 `createCustomTag` / `deleteCustomTag` 后同步刷新管理区并重绑删除按钮
+
+### 验证
+- 新增真实浏览器闭环断言 3 条（`tests/harness/index.html` 加 `?tagflow=1` 自检 + `tests/browser-check.mjs` 断言）：真实点击「+标签→建」与高级区「✕」，校验设置项 `tags.custom`/`tags.assignments`、条目 chip、管理区删除按钮三处同步增删
+- 浏览器验证由 19 条增至 22 条，全通过；静态 54 条保持全通过；合计 76 断言全绿
+
 ## [v0.3.3] - 2026-10-13
 
 ### 优化

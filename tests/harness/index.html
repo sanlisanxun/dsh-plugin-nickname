@@ -100,6 +100,52 @@ document.getElementById('cards').innerHTML = DATA.map(([pkg, title, desc]) => `
       if (h) h.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     }, 900);
   }
+  // ?tagflow=1 增/删标签闭环自检：真实点击「+标签→建」与高级区「✕」，把结果写进 body[data-tagflow]
+  if (new URLSearchParams(location.search).get('tagflow') === '1') {
+    const TAG = '验收标签甲';
+    const readSettings = () => { try { return JSON.parse(localStorage.getItem('dsh_plugin_nicknames_settings') || '{}'); } catch (e) { return {}; } };
+    setTimeout(() => {
+      const btn = document.getElementById('nickname-float-btn');
+      if (btn) btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }, 400);
+    setTimeout(() => {
+      const out = { ok: false };
+      try {
+        const panel = document.getElementById('nickname-edit-panel');
+        if (!panel) throw new Error('panel-not-open');
+        const addBtn = panel.querySelector('.nickname-tags .nickname-tag-add');
+        if (!addBtn) throw new Error('no-add-btn');
+        const tagsRow = addBtn.closest('.nickname-tags');
+        const pkg = tagsRow.dataset.pkg;
+        addBtn.click();
+        const input = tagsRow.querySelector('.nickname-tag-input');
+        const createBtn = tagsRow.querySelector('.nickname-tag-create');
+        if (!input || !createBtn) throw new Error('no-inline-input');
+        input.value = TAG;
+        createBtn.click();
+        const s1 = readSettings(); const t1 = s1.tags || {};
+        out.create = {
+          pkg: pkg,
+          inCustom: (t1.custom || []).indexOf(TAG) !== -1,
+          inAssign: ((t1.assignments || {})[pkg] || []).indexOf(TAG) !== -1,
+          chipOn: !!panel.querySelector('.nickname-tags[data-pkg="' + pkg + '"] .tag-toggle.on[data-tag="' + TAG + '"]'),
+          inManager: !!panel.querySelector('.nickname-tag-del[data-tag="' + TAG + '"]')
+        };
+        const del = panel.querySelector('.nickname-tag-del[data-tag="' + TAG + '"]');
+        out.delete = { foundDel: !!del };
+        if (del) del.click();
+        const s2 = readSettings(); const t2 = s2.tags || {};
+        out.delete.notInCustom = (t2.custom || []).indexOf(TAG) === -1;
+        out.delete.notInAssign = ((t2.assignments || {})[pkg] || []).indexOf(TAG) === -1;
+        out.delete.managerGone = !panel.querySelector('.nickname-tag-del[data-tag="' + TAG + '"]');
+        out.ok = out.create.inCustom && out.create.inAssign && out.create.chipOn && out.create.inManager
+          && out.delete.foundDel && out.delete.notInCustom && out.delete.notInAssign && out.delete.managerGone;
+      } catch (e) {
+        out.err = String((e && e.message) || e);
+      }
+      document.body.dataset.tagflow = JSON.stringify(out);
+    }, 1200);
+  }
 </script>
 </body>
 </html>

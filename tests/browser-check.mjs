@@ -116,6 +116,15 @@ try {
   ok('真实浏览器：自定义标签分组包含被打标的插件', !!tagSeg && /data-pkg="@kenz1117\/dsh-ui-usage-billing"/.test(tagSeg[0]), tagSeg ? '含' : '无分组');
   ok('真实浏览器：插件条目内显示固定标签 chip', /class="nickname-tag tag-fixed"[^>]*>官方<\/span>/.test(tagged));
   ok('真实浏览器：高级区列出自定义标签且可删除', /id="nickname-tag-manager"[\s\S]*?class="nickname-tag-del" data-tag="我的标签"/.test(tagged));
+
+  // 增/删标签闭环：真实点击「+标签→建」与高级区「✕」，结果由页面写进 body[data-tagflow]
+  const flow = await loadDOM('tagflow=1');
+  const fm = flow.match(/data-tagflow="([^"]*)"/);
+  let fj = null;
+  try { fj = fm ? JSON.parse(fm[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&')) : null; } catch (e) {}
+  ok('真实浏览器：增标签——写入设置并在条目/高级区出现', !!(fj && fj.create && fj.create.inCustom && fj.create.inAssign && fj.create.chipOn && fj.create.inManager), fm ? fm[1].slice(0, 240) : '无 data-tagflow');
+  ok('真实浏览器：删标签——从设置/条目/高级区移除', !!(fj && fj.delete && fj.delete.foundDel && fj.delete.notInCustom && fj.delete.notInAssign && fj.delete.managerGone), fm ? fm[1].slice(0, 240) : '无 data-tagflow');
+  ok('真实浏览器：增删标签闭环 ok=true', !!(fj && fj.ok === true), fm ? fm[1].slice(0, 240) : '无 data-tagflow');
 } finally {
   server.close();
 }
