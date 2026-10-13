@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-nickname",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "dsh插件名称修改：给 DeepSeek Harness 插件列表里的插件自定义中文备注名，直接显示在原生插件设置页",
   "type": "module",
   "main": "./lib/index.js",
@@ -31,6 +31,12 @@
         "@deepseek-ai/dsh-client-ui-slots"
       ]
     }
+  },
+  "scripts": {
+    "test": "node tests/client.test.cjs lib/client.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.2"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.0"

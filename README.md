@@ -53,6 +53,16 @@ dsh-plugin-nickname/
 
 完整更新日志见 [CHANGELOG.md](CHANGELOG.md)。
 
+### v0.2.6
+- 🐛 修复替换插件名时误伤子元素：改为只改写直接文本节点，不再用 `textContent` 覆盖整个卡片
+- 🐛 修复包名前缀冲突：`dsh.plugin` 与 `dsh.plugin-manager` 这类存在包含关系时，改为长包名优先
+- 🐛 修复备注名含引号/尖括号时破坏面板结构：包名与备注在渲染前做 HTML 转义
+- 🐛 修复重置或导入备注后面板被关闭：修正 `openEditPanel` 的开关语义
+- 🐛 修复反复开关面板在 `<head>` 累积 `<style>` 标签，关闭时同步移除样式与外部点击监听
+- 🐛 完善 dispose：补充清理 MutationObserver 防抖定时器与 `window.__setPluginNickname` 等全局挂载
+- 🐛 修复导出 JSON 时 URL 回收过快可能中断下载
+- ⚡ 优化 MutationObserver：防抖定时器收进闭包，扫描后丢弃自身写入触发的变更记录
+
 ### v0.2.5
 - 🐛 修复编辑面板样式注入变量未声明（`style` → `styleEl`）：严格模式下不再抛 `ReferenceError`，面板可正常打开
 - 🐛 修复 dispose 时样式标签无法移除导致的残留

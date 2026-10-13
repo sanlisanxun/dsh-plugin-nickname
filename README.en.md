@@ -51,6 +51,16 @@ dsh-plugin-nickname/
 
 Full changelog: [CHANGELOG.md](CHANGELOG.md).
 
+### v0.2.6
+- 🐛 Fixed nickname replacement wiping child elements: only direct text nodes are rewritten now
+- 🐛 Fixed package-name prefix collision (`dsh.plugin` vs `dsh.plugin-manager`): longest name wins
+- 🐛 Fixed panel markup being broken by quotes/angle brackets in nicknames: HTML-escaped before render
+- 🐛 Fixed the panel being closed after reset/import: corrected the open/close semantics
+- 🐛 Fixed `<style>` tags accumulating in `<head>` when toggling the panel repeatedly
+- 🐛 Hardened dispose: clears the MutationObserver debounce timer and global handles
+- 🐛 Fixed the export URL being revoked too early, which could abort the download
+- ⚡ Optimized MutationObserver: debounce timer moved into the closure; self-triggered records discarded
+
 ### v0.2.5
 - 🐛 Fixed undeclared variable (`style` → `styleEl`) when injecting panel styles: no more `ReferenceError` in strict mode, the panel opens correctly
 - 🐛 Fixed the injected `<style>` tag not being removable on dispose

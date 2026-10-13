@@ -2,6 +2,21 @@
 
 本文件记录 dsh-plugin-nickname 的所有版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循语义化版本规范。
 
+## [v0.2.6] - 2026-10-13
+
+### 修复
+- 替换插件名时用 `textContent` 覆盖整个元素，会把插件卡片里的图标等子元素一起抹掉；改为只改写直接文本节点
+- 包名存在包含关系时（如 `dsh.plugin` 与 `dsh.plugin-manager`），短包名会抢先命中长包名的文本；改为按包名长度降序匹配
+- 编辑面板渲染时包名与备注未转义，备注里输入 `"` 或 `<` 会破坏面板结构；改为渲染前 HTML 转义
+- 重置 / 导入备注后调用的 `openEditPanel()` 命中「已存在则移除并返回」分支，导致面板被关闭而非刷新；拆出 `closeEditPanel` / `toggleEditPanel`
+- 反复开关面板会向 `<head>` 累积 `<style>` 标签，且旧面板的外部点击监听未移除；关闭时统一清理
+- dispose 未清理 MutationObserver 的防抖定时器与 `window.__setPluginNickname`、`window.__nicknameTimer`
+- 导出 JSON 时 `<a>` 未挂入文档且 `URL.revokeObjectURL` 立即执行，部分浏览器可能中断下载
+
+### 优化
+- MutationObserver 的防抖定时器从 `window.__nicknameTimer` 移入闭包；一轮扫描结束后用 `takeRecords()` 丢弃自身写入触发的变更记录，减少无意义的全量重扫
+- `scanPlugins` 额外从 `[data-original-name]` 收集包名，DOM 重排后仍能取回已替换的包名
+
 ## [v0.2.5] - 2026-10-13
 
 ### 修复
