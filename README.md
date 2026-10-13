@@ -1,5 +1,7 @@
 # dsh插件名称修改
 
+[English](README.en.md) | 中文
+
 给 DeepSeek Harness (dsh) 插件列表里的插件自定义中文备注名，直接显示在原生插件设置页。
 
 ## 功能
